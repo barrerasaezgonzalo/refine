@@ -1,36 +1,101 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Refine
 
-## Getting Started
+Refine es una herramienta para mejorar prompts de forma rápida y simple.
 
-First, run the development server:
+Permite escribir una idea inicial, definir qué se quiere mejorar, agregar contexto opcional y generar una versión más clara, precisa y útil del prompt.
+
+También incluye un modo guiado en el que la IA puede hacer hasta 3 preguntas antes de generar el resultado final.
+
+## Funcionalidades
+
+- Mejora inmediata de prompts
+- Modo guiado con hasta 3 preguntas
+- Selección de objetivo
+- Selección de nivel de detalle
+- Contexto opcional
+- Templates rápidas
+- Regeneración usando la misma configuración
+- Copiar prompt mejorado
+- Crear un nuevo prompt desde cero
+- Contador de caracteres
+- Diseño responsive
+
+## Flujo
+
+1. Escribe tu prompt.
+2. Elige el objetivo de la mejora.
+3. Define el nivel de detalle.
+4. Agrega contexto si lo necesitas.
+5. Elige entre:
+   - **Mejorar ahora**
+   - **Mejorar con Refine**
+6. Revisa el prompt generado.
+7. Copia, regenera o vuelve a empezar.
+
+En el modo guiado puedes responder las preguntas que quieras antes de generar una versión más refinada.
+
+## Tecnologías
+
+- Next.js
+- React
+- TypeScript
+- Tailwind CSS
+- Groq
+- Lucide React
+
+## Inteligencia artificial
+
+Refine utiliza Groq para transformar el prompt original manteniendo su intención.
+
+La IA considera:
+
+- objetivo seleccionado
+- nivel de detalle
+- contexto adicional
+- respuestas del modo guiado
+
+El resultado está diseñado para poder copiarse y utilizarse directamente.
+
+## Desarrollo local
+
+Instala las dependencias:
+
+```bash
+npm install
+```
+
+Crea un archivo `.env.local`:
+
+```env
+GROQ_API_KEY=tu_api_key
+```
+
+Inicia el servidor de desarrollo:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Abre:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```text
+http://localhost:3000
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Verificación
 
-## Learn More
+Antes de desplegar:
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npm run build
+npm run lint
+npx knip
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Demo
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+🚀 Próximamente
 
-## Deploy on Vercel
+## Capturas
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Próximamente.
