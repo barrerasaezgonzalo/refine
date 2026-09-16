@@ -16,6 +16,7 @@ También incluye un modo guiado en el que la IA puede hacer hasta 3 preguntas an
 - Templates rápidas
 - Regeneración usando la misma configuración
 - Copiar prompt mejorado
+- Enviar a chatGPT
 - Crear un nuevo prompt desde cero
 - Contador de caracteres
 - Diseño responsive
@@ -27,8 +28,8 @@ También incluye un modo guiado en el que la IA puede hacer hasta 3 preguntas an
 3. Define el nivel de detalle.
 4. Agrega contexto si lo necesitas.
 5. Elige entre:
-   - **Mejorar ahora**
-   - **Mejorar con Refine**
+   - **Mejorar**
+   - **Refinar prompt**
 6. Revisa el prompt generado.
 7. Copia, regenera o vuelve a empezar.
 
@@ -97,8 +98,3 @@ npx knip
 https://refine-steel.vercel.app/
 
 ## Capturas
-
-<img width="1842" height="923" alt="Captura desde 2026-09-09 15-11-40" src="https://github.com/user-attachments/assets/54b56a86-f96e-4bdf-8ef3-73f46790b172" />
-<img width="1842" height="923" alt="Captura desde 2026-09-09 15-11-58" src="https://github.com/user-attachments/assets/bbb57a7d-e12c-4c83-9152-5cc01f8c7bff" />
-<img width="1842" height="923" alt="Captura desde 2026-09-09 15-12-01" src="https://github.com/user-attachments/assets/a6541426-76a9-4941-ab9c-bd3a66c596f7" />
-

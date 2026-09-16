@@ -3,13 +3,13 @@
 import { useContext } from "react";
 import { useRouter } from "next/navigation";
 import { PromptContext } from "@/app/providers/PromptProvider";
-import { PromptAnswer, PromptApiResponse } from "../types";
+import { GenerateMode, PromptApiResponse } from "../types";
+import { minInputText } from "../constants";
 
 export function usePrompt() {
-  const context = useContext(PromptContext);
+  const promptContext = useContext(PromptContext);
   const router = useRouter();
-
-  if (!context) {
+  if (!promptContext) {
     throw new Error("usePrompt debe usarse dentro de PromptProvider");
   }
 
@@ -20,44 +20,29 @@ export function usePrompt() {
     setObjective,
     detail,
     setDetail,
-    context: promptContext,
+    context,
     setContext,
     result,
     setResult,
-    guided,
-    setGuided,
     questions,
     setQuestions,
-    answers,
-    setAnswers,
-    loading,
-    setLoading,
+    loadingAction,
+    setLoadingAction,
+    mode,
+    setMode,
     error,
     setError,
-  } = context;
+  } = promptContext;
 
-  const generatePrompt = async ({
-    guidedMode = false,
-    includeAnswers = false,
-  }: {
-    guidedMode?: boolean;
-    includeAnswers?: boolean;
-  } = {}) => {
-    if (!prompt.trim() || loading) return;
-
-    setLoading(true);
+  const handleGenerate = async (mode: GenerateMode) => {
+    if (prompt.trim().length < minInputText || loadingAction || !mode) {
+      return;
+    }
+    setLoadingAction(mode);
+    setMode(mode);
     setError("");
 
     try {
-      const promptAnswers: PromptAnswer[] = includeAnswers
-        ? questions
-            .map((question) => ({
-              question: question.question,
-              answer: answers[question.id]?.trim() ?? "",
-            }))
-            .filter((answer) => answer.answer)
-        : [];
-
       const response = await fetch("/api/prompt", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -65,12 +50,11 @@ export function usePrompt() {
           prompt: prompt.trim(),
           objective,
           detail,
-          context: promptContext.trim(),
-          guided: guidedMode,
-          answers: promptAnswers,
+          context: context.trim(),
+          mode,
+          questions,
         }),
       });
-
       const data: PromptApiResponse & { error?: string } =
         await response.json();
 
@@ -79,56 +63,23 @@ export function usePrompt() {
       }
 
       setResult(data.result);
-      setQuestions(data.questions ?? []);
-      setGuided(guidedMode && Boolean(data.questions?.length));
+      setQuestions(mode === "improve" ? [] : data.questions || []);
 
+      router.push("/result");
       return data;
-    } catch (error) {
+    } catch (err: unknown) {
       setError(
-        error instanceof Error ? error.message : "No se pudo mejorar el prompt",
+        err instanceof Error ? err.message : "No se pudo mejorar el prompt",
       );
     } finally {
-      setLoading(false);
+      setLoadingAction(null);
     }
   };
 
-  const handleImproveNow = async () => {
-    const data = await generatePrompt();
-
-    if (data) {
-      setAnswers({});
-      router.push("/result");
-    }
-  };
-
-  const handleImproveGuided = async () => {
-    const data = await generatePrompt({
-      guidedMode: true,
-    });
-
-    if (data) {
-      setAnswers({});
-      router.push("/result");
-    }
-  };
-
-  const handleAnswer = (id: string, value: string) => {
-    setAnswers((current) => ({
-      ...current,
-      [id]: value,
-    }));
-  };
-
-  const handleGenerateWithAnswers = async () => {
-    await generatePrompt({
-      includeAnswers: true,
-    });
-  };
-
-  const handleRegenerate = async () => {
-    await generatePrompt({
-      includeAnswers: Object.values(answers).some((answer) => answer.trim()),
-    });
+  const handleAnswer = (id: string, answer: string) => {
+    setQuestions((current) =>
+      current.map((item) => (item.id === id ? { ...item, answer } : item)),
+    );
   };
 
   const handleReset = () => {
@@ -137,10 +88,9 @@ export function usePrompt() {
     setDetail("balanced");
     setContext("");
     setResult("");
-    setGuided(false);
     setQuestions([]);
-    setAnswers({});
     setError("");
+    setMode(null);
     router.push("/");
   };
 
@@ -151,19 +101,16 @@ export function usePrompt() {
     setObjective,
     detail,
     setDetail,
-    context: promptContext,
+    context,
     setContext,
     result,
-    guided,
     questions,
-    answers,
-    loading,
     error,
-    handleImproveNow,
-    handleImproveGuided,
+    handleGenerate,
     handleAnswer,
-    handleGenerateWithAnswers,
-    handleRegenerate,
     handleReset,
+    loadingAction,
+    setLoadingAction,
+    mode,
   };
 }

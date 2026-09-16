@@ -1,5 +1,8 @@
-import { SelectFieldProps } from "@/app/types";
+"use client";
+
+import { useState } from "react";
 import { ChevronDown } from "lucide-react";
+import { SelectFieldProps } from "@/app/types";
 
 export function SelectField<T extends string>({
   id,
@@ -7,25 +10,46 @@ export function SelectField<T extends string>({
   options,
   onChange,
 }: SelectFieldProps<T>) {
+  const [open, setOpen] = useState(false);
+
+  const selectedOption = options.find((option) => option.value === value);
+
   return (
     <div className="relative">
-      <select
+      <button
         id={id}
-        value={value}
-        onChange={(event) => onChange(event.target.value as T)}
-        className="h-12 w-full appearance-none rounded-xl border border-white/15 bg-slate-700 px-4 pr-10 text-neutral-300 outline-none focus:border-yellow-600"
+        type="button"
+        onClick={() => setOpen((current) => !current)}
+        className="flex h-10 w-full cursor-pointer items-center justify-between rounded-xl border border-white/15 bg-slate-800 px-4 text-left outline-none focus:border-yellow-600"
       >
-        {options.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </select>
+        <span>{selectedOption?.label}</span>
+        <ChevronDown
+          size={18}
+          className={`text-neutral-400 transition-transform ${
+            open ? "rotate-180" : ""
+          }`}
+        />
+      </button>
 
-      <ChevronDown
-        size={18}
-        className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-neutral-300"
-      />
+      {open && (
+        <div className="absolute z-50 mt-1 w-full overflow-hidden rounded-xl border border-white/15 bg-slate-800 shadow-xl">
+          {options.map((option) => (
+            <button
+              key={option.value}
+              type="button"
+              onClick={() => {
+                onChange(option.value);
+                setOpen(false);
+              }}
+              className="flex w-full cursor-pointer flex-col px-4 py-2 text-left hover:bg-slate-700"
+            >
+              <span className="text-base">{option.label}</span>
+
+              <span className="text-xs opacity-50">{option.description}</span>
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

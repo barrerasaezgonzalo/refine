@@ -1,21 +1,26 @@
 import { templates } from "@/app/constants";
-import { TemplatesProps } from "@/app/types";
-import { Code } from "lucide-react";
+import { usePrompt } from "@/app/hooks/usePrompt";
 
-export function Templates({ onSelect }: TemplatesProps) {
+export function Templates() {
+  const { setPrompt } = usePrompt();
   return (
-    <div className="mt-6 flex flex-wrap gap-3">
-      {templates.map((template) => (
-        <button
-          key={template}
-          type="button"
-          onClick={() => onSelect(template)}
-          className="flex cursor-pointer items-center gap-1 rounded-xl border border-white/20 bg-slate-600 px-2 py-1 text-xs text-neutral-300 transition hover:bg-slate-500"
-        >
-          <Code size={15} />
-          {template}
-        </button>
-      ))}
+    <div className="mt-6">
+      <div className="grid grid-cols-2 gap-3">
+        {templates.map((template) => (
+          <button
+            key={template.id}
+            type="button"
+            onClick={() => setPrompt(template.template)}
+            className="cursor-pointer outline-none items-center gap-2 rounded-lg border border-white/20 bg-slate-800 px-2 py-2 text-xs transition hover:bg-slate-600"
+          >
+            <span>{template.label}</span>
+          </button>
+        ))}
+      </div>
+      <div className="mt-4 text-xs opacity-50">
+        Debes cargar una plantilla y reemplazar los campos resaltados con tu
+        información.
+      </div>
     </div>
   );
 }

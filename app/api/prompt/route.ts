@@ -2,62 +2,60 @@ import { NextResponse } from "next/server";
 import { PromptDetail, PromptObjective, PromptRequest } from "../../types";
 
 const objectives: Record<PromptObjective, string> = {
-  clear: "Haz el prompt más claro, ordenado y fácil de interpretar. Elimina ambigüedades.",
-  precise: "Haz el prompt más preciso. Agrega restricciones y detalles útiles que reduzcan respuestas vagas.",
-  professional: "Mejora la estructura y el lenguaje para obtener un resultado más profesional.",
-  creative: "Mejora el prompt para favorecer ideas, enfoques y respuestas más creativas.",
+  clear:
+    "Haz el prompt más claro, ordenado y fácil de interpretar. Elimina ambigüedades.",
+  precise:
+    "Haz el prompt más preciso. Agrega restricciones y detalles útiles que reduzcan respuestas vagas.",
+  professional:
+    "Mejora la estructura y el lenguaje para obtener un resultado más profesional.",
+  creative:
+    "Mejora el prompt para favorecer ideas, enfoques y respuestas más creativas.",
 };
 
 const details: Record<PromptDetail, string> = {
-  short: "El prompt final debe ser breve, directo y contener solo lo necesario.",
-  balanced: "El prompt final debe tener suficiente contexto y precisión sin hacerse innecesariamente largo.",
-  detailed: "El prompt final puede desarrollar contexto, restricciones, pasos y formato esperado cuando aporten valor.",
+  short:
+    "El prompt final debe ser breve, directo y contener solo lo necesario.",
+  balanced:
+    "El prompt final debe tener suficiente contexto y precisión sin hacerse innecesariamente largo.",
+  detailed:
+    "El prompt final puede desarrollar contexto, restricciones, pasos y formato esperado cuando aporten valor.",
 };
 
-export async function POST(request: Request) {
+export async function POST(request: Request): Promise<NextResponse> {
   try {
-    const body: PromptRequest = await request.json();
-    const { prompt, objective, detail, context, guided = false, answers = [] } = body;
+    const body: PromptRequest & { mode?: string } = await request.json();
+    const { prompt, objective, detail, context, mode, questions = [] } = body;
+
+    const badRequest = (error: string): NextResponse =>
+      NextResponse.json({ error }, { status: 400 });
+
+    const serverError = (error: string): NextResponse =>
+      NextResponse.json({ error }, { status: 500 });
 
     if (!prompt?.trim()) {
-      return NextResponse.json(
-        { error: "Escribe un prompt para continuar" },
-        { status: 400 },
-      );
+      return badRequest("Escribe un prompt para continuar");
     }
-
     if (prompt.length > 2000) {
-      return NextResponse.json(
-        { error: "El prompt no puede superar los 2000 caracteres" },
-        { status: 400 },
-      );
+      return badRequest("El prompt no puede superar los 2000 caracteres");
     }
-
     if (context && context.length > 1000) {
-      return NextResponse.json(
-        { error: "El contexto no puede superar los 1000 caracteres" },
-        { status: 400 },
-      );
+      return badRequest("El contexto no puede superar los 1000 caracteres");
     }
-
-    if (!objectives[objective] || !details[detail]) {
-      return NextResponse.json(
-        { error: "Configuración inválida" },
-        { status: 400 },
-      );
+    if (!objectives?.[objective] || !details?.[detail]) {
+      return badRequest("Configuración inválida");
     }
 
     const apiKey = process.env.GROQ_API_KEY;
     if (!apiKey) {
-      return NextResponse.json(
-        { error: "No se pudo procesar la solicitud" },
-        { status: 500 },
-      );
+      return serverError("No se pudo procesar la solicitud");
     }
 
-    const answeredQuestions = answers
-      .filter((item) => item.answer?.trim())
-      .map( (item) => `Pregunta: ${item.question}\nRespuesta: ${item.answer.trim()}` )
+    const answeredQuestions = questions
+      .filter((item) => item.answer.trim())
+      .map(
+        (item) =>
+          `Pregunta: ${item.question}\nRespuesta: ${item.answer.trim()}`,
+      )
       .join("\n\n");
 
     const instructions = `
@@ -76,15 +74,22 @@ ${context?.trim() || "No proporcionado"}
 RESPUESTAS ADICIONALES:
 ${answeredQuestions || "No proporcionadas"}
 
-MODO GUIADO:
-${guided ? "Sí" : "No"}
-`;
+MODO:
+${mode}
 
-    const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+USA LAS RESPUESTAS ADICIONALES:
+${answeredQuestions.trim().length > 0 ? "Sí" : "No"}`;
+
+    const response = await fetch(
+      "https://api.groq.com/openai/v1/chat/completions",
+      {
         method: "POST",
-        headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json"},
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({
-          model: "openai/gpt-oss-20b",
+          model: "openai/gpt-oss-120b",
           temperature: 0.4,
           response_format: { type: "json_object" },
           messages: [
@@ -92,7 +97,6 @@ ${guided ? "Sí" : "No"}
               role: "system",
               content: `
 Eres un experto en ingeniería de prompts.
-
 Tu trabajo es transformar el prompt del usuario en una versión más clara, útil y efectiva.
 
 Reglas:
@@ -106,22 +110,22 @@ Reglas:
 - El resultado debe poder copiarse y utilizarse directamente.
 - No menciones que eres una IA.
 - Devuelve únicamente JSON válido.
+- Las RESPUESTAS ADICIONALES deben utilizarse para mejorar el prompt cuando existan.
 
-Si MODO GUIADO es "No", responde:
-
+Si MODO es "improve", responde:
 {
   "result": "prompt mejorado"
 }
 
-Si MODO GUIADO es "Sí", responde:
-
+SI MODO es "guided" o "ending", responde OBLIGATORIAMENTE:
 {
   "result": "prompt mejorado",
   "questions": [
     {
       "id": "question-1",
       "question": "pregunta breve y concreta",
-      "example": "Ej: ejemplo corto de una posible respuesta"
+      "example": "Ej: ejemplo corto de una posible respuesta",
+      "answer": "respuesta del usuario"
     }
   ]
 }
@@ -145,37 +149,35 @@ En modo guiado:
 
     const data = await response.json();
     if (!response.ok) {
-      console.error(data);
-
-      return NextResponse.json(
-        { error: "No se pudo mejorar el prompt" },
-        { status: 500 },
-      );
+      return serverError("No se pudo mejorar el prompt");
     }
 
     const content = data.choices?.[0]?.message?.content;
     if (!content) {
-      return NextResponse.json(
-        { error: "No se pudo generar el resultado" },
-        { status: 500 },
-      );
+      return serverError("No se pudo generar el resultado");
     }
 
-    const result = JSON.parse(content);
-    if (!result.result) {
-      return NextResponse.json(
-        { error: "La respuesta generada no es válida" },
-        { status: 500 },
-      );
+    let parsedResult;
+    try {
+      parsedResult = JSON.parse(content);
+    } catch {
+      return serverError("La respuesta generada no es válida");
     }
+
+    if (!parsedResult.result) {
+      return serverError("La respuesta generada no es válida");
+    }
+    const nextQuestions =
+      mode === "guided" &&
+      questions.every((question) => !question.answer.trim())
+        ? (parsedResult.questions ?? [])
+        : questions;
 
     return NextResponse.json({
-      result: result.result,
-      questions: guided ? (result.questions ?? []) : [],
+      result: parsedResult.result,
+      questions: nextQuestions,
     });
-  } catch (error) {
-    console.error(error);
-
+  } catch {
     return NextResponse.json(
       { error: "Ocurrió un error al mejorar el prompt" },
       { status: 500 },

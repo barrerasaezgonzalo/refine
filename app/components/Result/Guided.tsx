@@ -1,40 +1,42 @@
-
 "use client";
-
 import { usePrompt } from "@/app/hooks/usePrompt";
 
 export function Guided() {
-  const { questions, answers, handleAnswer } = usePrompt();
+  const { questions, handleAnswer } = usePrompt();
 
   return (
-    <section className="mt-8 rounded-2xl border border-white/10 bg-slate-700 p-5 md:p-7">
-      <div className="mb-6">
-        <h2 className="text-xl font-semibold text-white">
-          ¿Quieres afinarlo un poco más?
-        </h2>
+    <section className="text-neutral-300 ">
+      <div className="mt-4 flex flex-col gap-2">
+        <div className="flex flex-row gap-2 justify-between">
+          <p className="text-lg leading-7">Refinemos tu prompt</p>
+          <p className="text-sm text-neutral-400">Preguntas opcionales</p>
+        </div>
+        <div className="space-y-4 mt-2">
+          {questions.map((item, index) => (
+            <div
+              key={item.id}
+              className="bg-slate-800 px-4 py-2 rounded-xl border border-white/15"
+            >
+              <label
+                htmlFor={item.id}
+                className="mb-1 block text-sm font-medium flex items-center gap-2"
+              >
+                <span className="text-yellow-600 border border-yellow-600 flex w-fit px-2 py-1 rounded-lg items-center">
+                  0{index + 1}
+                </span>
+                {item.question}
+              </label>
 
-        <p className="mt-2 text-sm text-neutral-400">
-          Responde las preguntas que quieras. Puedes dejar cualquiera en blanco.
-        </p>
-      </div>
-
-      <div className="space-y-6">
-        {questions.map((item, index) => (
-          <div key={item.id}>
-            <label htmlFor={item.id} className="mb-2 block text-sm font-medium">
-              {index + 1}. {item.question}
-            </label>
-
-            <input
-              id={item.id}
-              value={answers[item.id] ?? ""}
-              onChange={(event) => handleAnswer(item.id, event.target.value)}
-              className="h-12 w-full rounded-xl border border-white/15 bg-slate-700 px-4 outline-none focus:border-yellow-600"
-            />
-
-            <p className="mt-2 text-xs text-neutral-400">{item.example}</p>
-          </div>
-        ))}
+              <input
+                id={item.id}
+                value={item.answer ?? ""}
+                onChange={(event) => handleAnswer(item.id, event.target.value)}
+                className="h-10 my-2 w-full rounded-xl border border-yellow-600 px-4 outline-none"
+              />
+              <p className="mt-1 text-xs text-neutral-400">{item.example}</p>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );
