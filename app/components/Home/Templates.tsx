@@ -11,7 +11,7 @@ export function Templates() {
             key={template.id}
             type="button"
             onClick={() => setPrompt(template.template)}
-            className="cursor-pointer outline-none items-center gap-2 rounded-lg border border-white/20 bg-slate-800 px-2 py-2 text-xs transition hover:bg-slate-600"
+           className=" text-neutral-400 cursor-pointer items-center gap-2 rounded-sm border border-white/20 bg-slate-400/10 px-2 py-2 text-xs transition"
           >
             <span>{template.label}</span>
           </button>

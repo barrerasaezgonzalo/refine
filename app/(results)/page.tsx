@@ -6,12 +6,17 @@ import { InputForm } from "../components/Home/InputForm";
 
 export default function Home() {
   return (
-    <>
-      <section>
+    <div className="flex gap-8 w-7xl">
+
+      <section className="flex-[32] mr-8">
         <Hero />
         <Templates />
       </section>
-      <InputForm />
-    </>
+
+      <div className="flex-[68]">
+        <InputForm />
+      </div>
+
+    </div>
   );
 }

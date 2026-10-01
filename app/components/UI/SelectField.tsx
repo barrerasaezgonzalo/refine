@@ -20,7 +20,7 @@ export function SelectField<T extends string>({
         id={id}
         type="button"
         onClick={() => setOpen((current) => !current)}
-        className="flex h-10 w-full cursor-pointer items-center justify-between rounded-xl border border-white/15 bg-slate-800 px-4 text-left outline-none focus:border-yellow-600"
+        className="text-neutral-400 flex h-10 w-full cursor-pointer items-center justify-between rounded-sm border border-white/15 bg-slate-400/30 px-4 text-left outline-none focus:border-yellow-600"
       >
         <span>{selectedOption?.label}</span>
         <ChevronDown

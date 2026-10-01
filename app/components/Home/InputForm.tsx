@@ -25,27 +25,26 @@ export function InputForm() {
     prompt.trim().length < minInputText || loadingAction !== null;
 
   return (
-    <section className="rounded-2xl border border-white/10 bg-slate-800 p-5 shadow-2xl backdrop-blur md:p-6">
-      <div className="mb-4 flex items-center justify-between">
-        <p className="flex items-center gap-2 text-sm font-medium">
-          <Terminal size={22} />
-          Ingresa tu idea.
-        </p>
+    <section className="rounded-sm border border-white/20 bg-slate-400/10 p-5 shadow-2xl backdrop-blur md:p-6">
+            <div className="mb-4 flex items-center justify-between">
+      <p className="flex items-center gap-2 text-sm font-medium text-neutral-400">
+        <Terminal size={22} />
+        Ingresa tu idea.
+      </p>
 
-        <button
-          type="button"
-          onClick={handleReset}
-          className="pr-2 flex cursor-pointer items-center gap-2 text-sm transition text-yellow-600 hover:text-yellow-400"
-        >
-          <BrushCleaning size={17} />
-          Limpiar
-        </button>
-      </div>
+      <button
+        type="button"
+        onClick={handleReset}
+        className="pr-2 flex cursor-pointer items-center gap-2 text-sm transition text-yellow-600 hover:text-yellow-400"
+      >
+        <BrushCleaning size={17} />Reiniciar
+      </button>
+    </div>
 
       <div className="relative">
         <div
           aria-hidden="true"
-          className="min-h-60 w-full rounded-xl border border-transparent p-4 pb-8 bg-slate-800 text-sm leading-7 whitespace-pre-wrap break-words pointer-events-none overflow-hidden"
+          className="min-h-60 w-full rounded-sm border border-transparent p-4 pb-8 bg-slate-600/50 text-sm leading-7 whitespace-pre-wrap break-words pointer-events-none overflow-hidden"
           dangerouslySetInnerHTML={{ __html: formatText(prompt) }}
         />
 
@@ -57,17 +56,17 @@ export function InputForm() {
           disabled={loadingAction !== null}
           onChange={(event) => setPrompt(event.target.value)}
           placeholder="Ej: Quiero aprender React y necesito un plan para empezar..."
-          className="absolute inset-0 min-h-60 w-full resize-none rounded-xl border border-white/15 bg-transparent p-4 pb-8 text-sm leading-7 text-transparent outline-none transition custom-scroll placeholder:text-neutral-400 focus:border-yellow-600 disabled:opacity-60"
+            className="absolute inset-0 min-h-60 w-full resize-none rounded-sm border border-white/15 bg-transparent p-4 pb-8 text-sm leading-7 text-transparent outline-none transition custom-scroll placeholder:text-neutral-400 focus:border-yellow-600 disabled:opacity-60"
         />
 
-        <span className="absolute bottom-3 right-4 text-xs">
+        <span className="absolute bottom-3 right-4 text-xs text-neutral-400">
           {prompt.length} / 2000
         </span>
       </div>
 
       <div className="mt-5 grid gap-4 md:grid-cols-2">
         <div className="flex flex-col gap-2">
-          <label htmlFor="objective" className="ml-1 text-sm font-medium">
+          <label htmlFor="objective" className="ml-1 text-sm font-medium text-neutral-400">
             Objetivo
           </label>
 
@@ -80,7 +79,7 @@ export function InputForm() {
         </div>
 
         <div className="flex flex-col gap-2">
-          <label htmlFor="detail" className="ml-1 text-sm font-medium ">
+          <label htmlFor="detail" className="ml-1 text-sm font-medium text-neutral-400">
             Nivel de detalle
           </label>
 
@@ -107,10 +106,10 @@ export function InputForm() {
             disabled={loadingAction !== null}
             onChange={(event) => setContext(event.target.value)}
             placeholder="Ej: Es para una presentación dirigida a clientes..."
-            className="min-h-24 w-full resize-none rounded-xl border border-white/15 bg-slate-800 p-4 pb-8 text-sm leading-6  outline-none transition  placeholder:text-neutral-400 focus:border-yellow-600 disabled:opacity-60"
+            className="min-h-24 w-full resize-none rounded-sm border border-[#30394a] bg-slate-400/30 p-4 pb-8 text-sm leading-6  outline-none transition  placeholder:text-neutral-400 focus:border-yellow-600 disabled:opacity-60"
           />
 
-          <span className="absolute bottom-3 right-4 text-xs">
+          <span className="absolute bottom-3 right-4 text-xs text-neutral-400">
             {context.length} / 1000
           </span>
         </div>
@@ -121,7 +120,7 @@ export function InputForm() {
           type="button"
           disabled={disabled}
           onClick={() => handleGenerate("improve")}
-          className="flex h-10 cursor-pointer items-center justify-center gap-2 rounded-xl bg-yellow-600 px-5 font-semibold transition hover:brightness-110 disabled:cursor-not-allowed border-yellow-600 disabled:opacity-60"
+          className="flex h-10 cursor-pointer items-center justify-center gap-2 rounded-sm bg-yellow-600 px-5 font-semibold transition hover:brightness-110 disabled:cursor-not-allowed border-yellow-600 disabled:opacity-60"
         >
           <Wand2
             size={18}
@@ -134,7 +133,7 @@ export function InputForm() {
           type="button"
           disabled={disabled}
           onClick={() => handleGenerate("guided")}
-          className="flex h-10 cursor-pointer items-center justify-center gap-2 rounded-xl border border-white/20 px-5 font-medium transition  hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
+          className="flex h-10 cursor-pointer items-center justify-center gap-2 rounded-sm border border-[#30394a] bg-[#171d2b] px-5 font-medium transition  hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50"
         >
           <Bot
             size={18}
