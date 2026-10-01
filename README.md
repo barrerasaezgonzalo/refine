@@ -98,3 +98,7 @@ npx knip
 https://refine-steel.vercel.app/
 
 ## Capturas
+
+<img width="1469" height="815" alt="Captura de pantalla 2026-09-16 020433" src="https://github.com/user-attachments/assets/9af92751-7c6e-4606-a082-0c4c93386d77" />
+<img width="1438" height="892" alt="Captura de pantalla 2026-09-16 020404" src="https://github.com/user-attachments/assets/6d2eb72d-0da9-4f34-a3bb-886c6cdcb74e" />
+<img width="1503" height="861" alt="Captura de pantalla 2026-09-16 020245" src="https://github.com/user-attachments/assets/b6f5496f-46e5-45f0-b5cb-1ddf0de4d5e2" />
